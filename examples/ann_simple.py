@@ -21,7 +21,7 @@ for key in range(NUM_RECORDS):
     vector_db.insert(str(key), np.random.rand(VEC_DIM))
 
 # Print database
-vector_db.display(keys=map(str, range(5)), precision=4, threshold=5)
+vector_db.display(keys=map(str, range(5)))
 
 # Build inner structure
 vector_db.build(n_trees=3, k=5)

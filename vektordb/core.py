@@ -27,10 +27,15 @@ class VectorDatabase(ABC):
 
     def insert(self, key: str, vector: Union[List[float],np.ndarray,Vector]) -> None:
         """Inserts a new key/vector pair into the database."""
-        if isinstance(vector, np.ndarray):
+        if isinstance(vector, Vector):
+            pass
+        elif isinstance(vector, np.ndarray):
             vector = Vector(vector)
         elif isinstance(vector, list):
             vector = Vector(np.array(vector))
+        else:
+            raise ValueError("Expected vector of type Vector, list or np.ndarray!")
+
         assert vector.data.ndim == 1, f"✋ Expected 1D array (Got: {vector.data.ndims}D)!"
         self.vectors[key] = vector
 
@@ -42,15 +47,25 @@ class VectorDatabase(ABC):
         """Dumps the entire vector database"""
         return dict(self.vectors)
 
-    def display(self, keys: Union[List,None]=None, precision: int=4, threshold: int=5) -> None:
+    def display(
+        self,
+        keys: Union[List,None]=None,
+        np_format: Dict={
+            'precision': 4,
+            'threshold': 5,
+            'suppress': False
+        },
+        pt_format: Dict={
+			'max_width': 100
+        }) -> None:
         """Prints the entire database"""
 
         # Handle vector formatting via NumPy
         # https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html
-        np.set_printoptions(precision=precision, threshold=threshold)
+        np.set_printoptions(**np_format)
 
 		# and let PrettyTable handle the rest
-        dbt = PrettyTable(['Key', 'Data', 'Metadata'])
+        dbt = PrettyTable(['Key', 'Data', 'Metadata'], **pt_format)
 
         if keys is not None:
             for key in keys:
