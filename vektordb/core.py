@@ -47,7 +47,7 @@ class VectorDatabase(ABC):
         """Dumps the entire vector database"""
         return dict(self.vectors)
 
-    def display(
+    def display(  # pylint: disable=dangerous-default-value
         self,
         keys: Union[List,None]=None,
         np_format: Dict={
