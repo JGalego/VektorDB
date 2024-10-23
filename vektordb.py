@@ -91,30 +91,3 @@ class ANNVectorDatabase(VectorDatabase):
         similarities = list(set(similarities))
         similarities.sort(key=lambda entry: entry[1], reverse=True)
         return similarities[:n]
-
-if __name__ == '__main__':
-
-    NUM_RECORDS = 1000
-    VEC_DIM = 100
-
-    # Set random seed
-    np.random.seed(42)
-
-    # Initialize the vector databases
-    vector_db = ANNVectorDatabase()
-
-    # Insert records
-    for key in range(NUM_RECORDS):
-        vector_db.insert(str(key), np.random.rand(VEC_DIM))
-
-    # Build inner structure
-    if isinstance(vector_db, ANNVectorDatabase):
-        vector_db.build(n_trees=3)
-
-    # Search for similar vectors
-    query = np.random.rand(VEC_DIM)
-    vector_db.search(query, NUM_RECORDS // 10)
-
-    # Retrieve specific vectors
-    for key in np.random.permutation(NUM_RECORDS)[:NUM_RECORDS // 10]:
-        vector_db.retrieve(str(key))
